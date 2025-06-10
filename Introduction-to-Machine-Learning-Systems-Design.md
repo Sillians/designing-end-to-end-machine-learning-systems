@@ -233,6 +233,7 @@ Framing an ML problem correctly is critical to developing effective models. It i
 
 > **Example:** Predict customer churn to reduce loss in a subscription business.
 
+
 ---
 
 ### **2. Determine the ML Task Type**
@@ -317,6 +318,67 @@ categories an example can belong to, you might pick the two highest probability 
 > **Example:**
 > Inputs = customer demographics + usage stats
 > Output = binary churn (yes/no)
+
+
+**Objective Functions**
+To learn, an ML model needs an objective function to guide the learning process.
+An `objective function` is also called a `loss function`, because the objective of the learning process is usually to minimize (or optimize) the loss caused by wrong predictions.
+
+For supervised ML, this loss can be computed by comparing the model’s outputs with the ground truth labels using a measurement like root `mean squared error (RMSE)` or `cross entropy`.
+
+
+Choosing an `objective function` is usually straightforward, though not because objective functions are easy. Coming up with meaningful objective functions requires algebra knowledge, so most ML engineers just use common loss functions like `RMSE` or `MAE (mean absolute error)` for regression, `logistic loss` (also `log loss`) for binary classification, and `cross entropy` for multiclass classification.
+
+
+
+**Decoupling objectives**
+
+Framing ML problems can be tricky when you want to minimize multiple objective functions. Imagine you’re building a system to rank items on users’ newsfeeds. Your original goal is to maximize users’ engagement. You want to achieve this goal through the following three objectives:
+
+- `Filter out spam`
+- `Filter out NSFW content`
+- `Rank posts by engagement: how likely users will click on it`
+
+
+However, you quickly learned that optimizing for users’ engagement alone can lead to questionable ethical concerns. Because extreme posts tend to get more engagements, your algorithm learned to prioritize extreme content. You want to create a more wholesome newsfeed. So you have a new goal: maximize users’ engagement while minimizing the spread of extreme views and misinformation. To obtain this goal, you add two new objectives to your original plan:
+
+
+- `Filter out spam`
+- `Filter out NSFW content`
+- `Filter out misinformation`
+- `Rank posts by quality`
+- `Rank posts by engagement: how likely users will click on it`
+
+
+Now two objectives are in conflict with each other. If a post is engaging but it’s of questionable quality, should that post rank high or low?
+
+An objective is represented by an `objective function`. To rank posts by quality, you first need to predict `posts’ quality`, and you want `posts’ predicted quality` to be as close to their actual quality as possible. Essentially, you want to minimize `quality_loss: the difference between each post’s predicted quality and its true quality`.
+
+Similarly, to rank posts by engagement, you first need to predict the number of `clicks` each post will get. You want to minimize `engagement_loss: the difference between each post’s predicted clicks and its actual number of clicks`.
+
+One approach is to combine these two losses into one loss and train one model to minimize that loss:
+                
+                loss = ɑ quality_loss + β engagement_loss
+
+
+A problem with this approach is that each time you tune `α` and `β` for example, if the quality of your users’ newsfeeds goes up but users’ engagement goes down, you might want to decrease `α` and increase `β` you’ll have to retrain your model.
+
+Another approach is to train two different models, each optimizing one loss. So you have two models:
+- `quality_model`
+
+                Minimizes quality_loss and outputs the predicted quality of each post
+
+- `engagement_model`
+
+                Minimizes engagement_loss and outputs the predicted number of clicks of each post
+
+
+You can combine the models’ outputs and rank posts by their combined scores:
+
+                ɑ quality_score + β engagement_score
+
+Now you can tweak `α` and `β` without retraining your models!
+
 
 ---
 
@@ -407,9 +469,13 @@ Framing an ML problem well involves:
 9. Establishing a baseline
 10. Iterative refinement
 
-Proper framing ensures relevance, feasibility, and ultimately, the success of the ML solution.
+Proper framing ensures relevance, feasibility, and ultimately, the success of the ML solution. Regardless of which camp will prove to be right eventually, no one can deny that data is essential, for now. Both the research and industry trends in the recent decades show the success of ML relies more and more on the quality and quantity of data. Models are getting bigger and using more data.
 
----
+There are still many people who believe that having intelligent algorithms will eventually trump having a large amount of data. However, the success of systems including `AlexNet`, `BERT`, and `GPT` showed that the progress of ML in the last decade relies on having access to a large amount of data. Regardless of whether data can overpower intelligent design, no one can deny the importance of data in ML.
+
+
+
+
 
 
 
