@@ -336,10 +336,93 @@ In the data world;
 
 ## **ETL: Extract, Transform, and Load**
 
+Even before ML, ETL was all the rage in the data world, and it’s still relevant today for ML applications. ETL refers to the general purpose processing and aggregating of data into the shape and the format that you want.
+
+Extract is extracting the data you want from all your data sources. Some of them will be corrupted or malformatted. In the extracting phase, you need to validate your data and reject the data that doesn’t meet your requirements.
+
+Transform is the meaty part of the process, where most of the data processing is done. You might want to join data from multiple sources and clean it. You might want to standardize the value ranges (e.g., one data source might use `“Male”` and `“Female”` for genders, but another uses `“M”` and `“F”` or `“1”` and `“2”`). You can apply operations such as transposing, deduplicating, sorting, aggregating, deriving new features, more data
+validating, etc.
+
+Load is deciding how and how often to load your transformed data into the target destination, which can be a file, a database, or a data warehouse.
+
+
+![Alt text](images/ETL-process.png)
+
+
+As companies weigh the pros and cons of storing structured data versus storing unstructured data, vendors evolve to offer hybrid solutions that combine the flexibility of data lakes and the data management aspect of data warehouses. For example, `Databricks` and `Snowflake` both provide data lakehouse solutions.
+
+
+
+## **Modes of Dataflow**
+
+When data is passed from one process to another, we say that the data flows from one process to another, which gives us a dataflow. There are three main modes of dataflow:
+
+- Data passing through databases
+- Data passing through services using requests such as the requests provided by `REST` and `RPC APIs` (e.g., POST/GET requests)
+- Data passing through a real-time transport like `Apache Kafka` and `Amazon Kinesis`.
+
+
+
+1. **Data Passing Through Databases**
+
+Passing data from `process A` to `process B`, `process A` can write that data into a `database`, and `process B` simply reads from that database.
+
+This mode, however, doesn’t always work because of two reasons. First, it requires that both processes must be able to access the same database. This might be infeasible, especially if the two processes are run by two different companies.
+
+Second, it requires both processes to access data from databases, and read/write from databases can be slow, making it unsuitable for applications with strict latency requirements—e.g., almost all consumer-facing applications.
+
+
+2. **Data Passing Through Services**
+
+One way to pass data between two processes is to send data directly through a network that connects these two processes. To pass data from `process B` to `process A`, `process A` first sends a request to `process B` that specifies the `data A` needs, and `B` returns the requested data through the same network. Because processes communicate through requests, we say that this is request-driven.
+
+
+Two services in communication with each other can be run by different companies in different applications. For example, a service might be run by a stock exchange that keeps track of the current stock prices. Another service might be run by an investment firm that requests the current stock prices and uses them to predict future stock prices.
+
+Two services in communication with each other can also be parts of the same application. Structuring different components of your application as separate services allows each component to be developed, tested, and maintained independently of one another. Structuring an application as separate services gives you a microservice architecture.
+
+To put the microservice architecture in the context of `ML systems`, imagine you’re an ML engineer working on the price optimization problem for a company that owns a ride-sharing application like `Lyft`. In reality, `Lyft` has hundreds of services in its microservice architecture, but for the sake of simplicity, let’s consider only three services:
+
+- `Driver management service`: Predicts how many drivers will be available in the next minute in a given area.
+
+- `Ride management service`: Predicts how many rides will be requested in the next minute in a given area.
+
+- `Price optimization service`: Predicts the optimal price for each ride. The price for a ride should be low enough for riders to be willing to pay, yet high enough for drivers to be willing to drive and for the company to make a profit.
+
+
+
+3. **Data Passing Through Real-Time Transport**
+
+A piece of data broadcast to a real-time transport is called an `event`. This architecture is, therefore, also called `event-driven`. A real-time transport is sometimes called an `event bus`. Request-driven architecture works well for systems that rely more on logic than on
+data. Event-driven architecture works better for systems that are data-heavy.
+
+The two most common types of real-time transports are `pubsub`, which is short for `publish-subscribe`, and `message queue`. In the pubsub model, any service can `publish` to different topics in a real-time transport, and any service that `subscribes` to a topic can read all the events in that topic. The services that produce data don’t care about what services consume their data. Pubsub solutions often have a retention policy—
+data will be retained in the real-time transport for a certain period of time (e.g., seven days) before being deleted or moved to a permanent storage (like Amazon S3).
+
+
+![Alt text](images/pub-sub.png)
+
+In a message queue model, an event often has intended consumers (an event with intended consumers is called a message), and the message queue is responsible for getting the message to the right consumers.
+
+Examples of `pubsub` solutions are `Apache Kafka` and `Amazon Kinesis`. Examples of message queues are `Apache RocketMQ` and `RabbitMQ`. Both paradigms have gained a lot of traction in the last few years.
 
 
 
 
+## **Batch Processing Versus Stream Processing**
+
+When data is processed in batch jobs, we refer to it as `batch processing`. Batch processing has been a research subject for many decades, and companies have come up with `distributed systems` like `MapReduce` and `Spark` to process batch data efficiently.
+
+
+When you have data in real-time transports like `Apache Kafka` and `Amazon Kinesis`, we say that you have streaming data. Stream processing refers to doing computation on streaming data. Computation on streaming data can also be kicked off periodically, but the periods are usually much shorter than the periods for batch jobs (e.g., every five minutes instead of every day). Computation on streaming data can also be kicked off whenever the need arises. For example, whenever a user requests a ride, you process your data stream to see what drivers are currently available.
+
+Stream processing is quite efficient, because, streaming technologies like `Apache Flink` are proven to be `highly scalable` and `fully distributed`, which means they can do computation in parallel. Second, the strength of stream processing is in stateful computation. With stream processing, it’s possible to continue computing only the new data each day and joining the new data computation with the older data computation,
+preventing redundancy.
+
+- Batch features — features extracted through `batch processing` — are also known as `static features`.
+- Streaming features — features extracted through `stream processing` — are also known as `dynamic features`.
+
+Stream processing is more difficult because the data amount is unbounded and the data comes in at variable rates and speeds. It’s easier to make a stream processor do batch processing than to make a batch processor do stream processing.
 
 
 
