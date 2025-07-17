@@ -9,15 +9,12 @@
 `ML algorithms work well in situations when the data distribution is more balanced, and not so well when the classes are heavily imbalanced. Unfortunately, problems with class imbalance are the norm in the real world.`
 
 
-Building a state-of-the-art model is interesting. Spending days wrangling with a massive amount of malformatted data that doesn’t even fit
-into your machine’s memory is frustrating. Data is messy, complex, unpredictable, and potentially treacherous. If not handled
-properly, it can easily sink your entire ML operation. But this is precisely the reason why data scientists and ML engineers should learn how to handle data well, saving us time and headache down the road. Like other steps in building ML systems, creating training data is an iterative process. As your model evolves through a project lifecycle, your training data will likely also evolve.
+Building a state-of-the-art model is interesting. Spending days wrangling with a massive amount of malformatted data that doesn’t even fit into your machine’s memory is frustrating. Data is messy, complex, unpredictable, and potentially treacherous. If not handled properly, it can easily sink your entire ML operation. But this is precisely the reason why data scientists and ML engineers should learn how to handle data well, saving us time and headache down the road. Like other steps in building ML systems, creating training data is an iterative process. As your model evolves through a project lifecycle, your training data will likely also evolve.
 
 
 
 ## Sampling
-Sampling is an integral part of the ML workflow that is, unfortunately, often overlooked in typical ML coursework. Sampling happens in many steps of an ML project lifecycle, such as sampling from all possible real-world data to create training data; sampling from a given dataset to create splits for `training`, `validation`, and `testing`; or sampling from all possible events that happen within your ML system for monitoring
-purposes. 
+Sampling is an integral part of the ML workflow that is, unfortunately, often overlooked in typical ML coursework. Sampling happens in many steps of an ML project lifecycle, such as sampling from all possible real-world data to create training data; sampling from a given dataset to create splits for `training`, `validation`, and `testing`; or sampling from all possible events that happen within your ML system for monitoring purposes. 
 
 There are two families of sampling: nonprobability sampling and random sampling.
 
@@ -38,18 +35,15 @@ In the simplest form of random sampling, you give all samples in the population 
 
 - The advantage of this method is that it’s easy to implement. 
 
-- The drawback is that rare categories of data might not appear in your selection. Consider the case where a class appears only in `0.01%` of your data population. If you randomly select `1%` of your data, samples of this rare class will unlikely be selected. Models trained on this
-selection might think that this rare class doesn’t exist.
+- The drawback is that rare categories of data might not appear in your selection. Consider the case where a class appears only in `0.01%` of your data population. If you randomly select `1%` of your data, samples of this rare class will unlikely be selected. Models trained on this selection might think that this rare class doesn’t exist.
 
 
 3. **Stratified Sampling**
-To avoid the drawback of simple random sampling, you can first divide your population into the groups that you care about and sample from each group separately. For example, to sample `1%` of data that has two classes, `A` and `B`, you can sample `1%` of
-`class A` and `1%` of `class B`. This way, no matter how rare class A or B is, you’ll ensure that samples from it will be included in the selection. Each group is called a `stratum`, and this method is called `stratified sampling`.
+To avoid the drawback of simple random sampling, you can first divide your population into the groups that you care about and sample from each group separately. For example, to sample `1%` of data that has two classes, `A` and `B`, you can sample `1%` of `class A` and `1%` of `class B`. This way, no matter how rare class A or B is, you’ll ensure that samples from it will be included in the selection. Each group is called a `stratum`, and this method is called `stratified sampling`.
 
 
 4. **Weighted Sampling**
-In weighted sampling, each sample is given a weight, which determines the probability of it being selected. For example, if you have three samples, `A`, `B`, and `C`, and want them to be selected with the probabilities of `50%`, `30%`, and `20%` respectively, you can
-give them the weights `0.5`, `0.3`, and `0.2`.
+In weighted sampling, each sample is given a weight, which determines the probability of it being selected. For example, if you have three samples, `A`, `B`, and `C`, and want them to be selected with the probabilities of `50%`, `30%`, and `20%` respectively, you can give them the weights `0.5`, `0.3`, and `0.2`.
 
 This method allows you to leverage domain expertise. For example, if you know that a certain subpopulation of data, such as more recent data, is more valuable to your model and want it to have a higher chance of being selected, you can give it a higher weight.
 
@@ -153,7 +147,194 @@ a small business to go bankrupt.
 
 
 
-**Handling the Lack of Labels**
+### **Handling the Lack of Labels**
+Because of the challenges in acquiring sufficient high-quality labels, many techniques have been developed to address the problems that result. 
+
+Four techniques for handling the lack of hand-labeled data
+- weak supervision, 
+- semi-supervision, 
+- transfer learning, and 
+- active learning.
+
+
+**Weak Supervision**
+If hand labeling is so problematic, what if we don’t use hand labels altogether? One approach that has gained popularity is weak supervision. One of the most popular open source tools for weak supervision is `Snorkel`, developed at the Stanford AI Lab. The insight behind weak supervision is that people rely on `heuristics`, which can be developed with subject matter expertise, to label data.
+
+In theory, you don’t need any hand labels for weak supervision. However, to get a sense of how accurate your `LFs (labeling functions)` are, a small number of hand labels is recommended. These hand labels can help you discover patterns in your data to write better LFs.
+
+Weak supervision can be especially useful when your data has strict privacy requirements. You only need to see a small, cleared subset of data to write LFs, which can be applied to the rest of your data without anyone looking at it.
+
+
+
+**Semi-supervision**
+If weak supervision leverages heuristics to obtain noisy labels, semi-supervision leverages structural assumptions to generate new labels based on a small set of initial labels. Unlike weak supervision, semi-supervision requires an initial set of labels.
+
+A classic semi-supervision method is self-training. You start by training a model on your existing set of labeled data and use this model to make predictions for unlabeled samples. 
+
+Semi-supervision is the most useful when the number of training labels is limited. One thing to consider when doing semi-supervision with limited data is how much of this limited data should be used to evaluate multiple candidate models and select the best one. 
+
+
+**Transfer Learning**
+Transfer learning refers to the family of methods where a model developed for a task is reused as the starting point for a model on a second task. First, the base model is trained for a base task. The base task is usually a task that has cheap and abundant training data. Language modeling is a great candidate because it doesn’t require labeled data. Language models can be trained on any body of text—books, `Wikipedia articles`, `chat histories` and the task is: given a sequence of tokens, predict the next token. When given the sequence “I bought NVIDIA shares because I believe in the importance of,” a language model might output “hardware” or “GPU” as the next token.
+
+
+Transfer learning is especially appealing for tasks that don’t have a lot of labeled data. Even for tasks that have a lot of labeled data, using a pretrained model as the starting point can often boost the performance significantly compared to training from scratch.
+
+Many have hypothesized that in the future only a handful of companies will be able to afford to train large
+pretrained models. The rest of the industry will use these pretrained models directly or fine-tune them for their specific needs.
+
+
+
+**Active Learning**
+Active learning is a method for improving the efficiency of data labels. The hope here is that ML models can achieve greater accuracy with fewer training labels if they can choose which data samples to learn from.
+
+
+
+## Class Imbalance
+Class imbalance typically refers to a problem in classification tasks where there is a substantial difference in the number of samples in each class of the training data. For example, in a training dataset for the task of detecting lung cancer from `X-ray images`, `99.99%` of the `X-rays` might be of `normal lungs`, and only `0.01%` might contain `cancerous cells`.
+
+Class imbalance can also happen with regression tasks where the labels are continuous.
+
+
+### **Challenges of Class Imbalance
+ML, especially deep learning, works well in situations when the data distribution is more balanced, and usually not so well when the classes are heavily imbalanced.
+
+- The first reason is that class imbalance often means there’s insufficient signal for your model to learn to detect the minority classes.
+
+- The second reason is that class imbalance makes it easier for your model to get stuck in a nonoptimal solution by exploiting a simple heuristic instead of learning anything useful about the underlying pattern of the data.
+
+- The third reason is that class imbalance leads to asymmetric costs of error—the cost of a wrong prediction on a sample of the rare class might be much higher than a wrong prediction on a sample of the majority class.
+
+For example, misclassification on an `X-ray` with `cancerous cells` is much more dangerous than misclassification on an `X-ray` of a `normal lung`. If your loss function isn’t configured to address this asymmetry, your model will treat all samples the same way. As a result, you might obtain a model that performs equally well on both majority and minority classes, while you much prefer a model that performs less well on the majority class but much better on the minority one.
+
+
+
+### **Handling Class Imbalance**
+Class imbalance affects tasks differently based on the level of imbalance. Some tasks are more sensitive to class imbalance than others.
+
+Three approaches to handling class imbalance:
+- Choosing the right metric for your problem
+- data-level methods, which means changing the data distribution to make it less imbalanced
+- Algorithm-level methods, which means changing your learning method to make it more robust to class imbalance.
+
+
+
+1. **Using the right evaluation metrics**
+The most important thing to do when facing a task with class imbalance is to choose the appropriate evaluation metrics. Wrong metrics will give you the wrong ideas of how your models are doing and, subsequently, won’t be able to help you develop or choose models good enough for your task.
+
+
+The overall `accuracy` and `error rate` are the most frequently used metrics to report the performance of ML models. However, these are insufficient metrics for tasks with class imbalance because they treat all classes equally, which means the performance of your model on the majority class will dominate these metrics. This is especially bad when the majority class isn’t what you care about.
+
+
+`F1`, `precision`, and `recall` are metrics that measure your model’s performance with respect to the positive class in binary classification problems, as they rely on true positive—an outcome where the model correctly predicts the positive class.
+
+
+- `Precision = True Positive / (True Positive + False Positive)`
+- `Recall = True Positive / (True Positive + False Negative)`
+- `F1 = 2 × Precision × Recall / (Precision + Recall)`
+ 
+Like F1 and recall, the `ROC` curve focuses only on the positive class and doesn’t show how well your model does on the negative class. Davis and Goadrich suggested that we should plot precision against recall instead, in what they termed the `Precision-Recall Curve`. They argued that this curve gives a more informative picture of an algorithm’s performance on tasks with heavy class imbalance.
+
+
+2. **Data-level methods: Resampling**
+Data-level methods modify the distribution of the training data to reduce the level of imbalance to make it easier for the model to learn. A common family of techniques is resampling. Resampling includes oversampling, adding more instances from the minority classes, and undersampling, removing instances of the majority classes.
+
+The simplest way to undersample is to randomly remove instances from the majority class, whereas the simplest way to oversample is to randomly make copies of the minority class until you have a ratio that you’re happy with. 
+
+
+A popular method of oversampling low-dimensional data is `SMOTE` (synthetic minority oversampling technique).
+It synthesizes novel samples of the minority class through sampling convex combinations of existing data points within the minority class.
+
+
+Undersampling runs the risk of losing important data from removing data. Oversampling runs the risk of overfitting on training data, especially if the added copies of the minority class are replicas of existing data. Many sophisticated sampling techniques have been developed to mitigate these risks.
+
+
+One such technique is `two-phase learning`. You first train your model on the resampled data. This resampled data can be achieved by randomly undersampling large classes until each class has only N instances. You then fine-tune your model on the original data.
+
+
+Another technique is dynamic sampling: oversample the low-performing classes and undersample the high-performing classes during the training process. Introduced by `Pouyanfar et al`., the method aims to show the model less of what it has already learned and more of what it has not.
+
+
+
+
+3. **Algorithm-level methods**
+If data-level methods mitigate the challenge of class imbalance by altering the distribution of your training data, algorithm-level methods keep the training data distribution intact but alter the algorithm to make it more robust to class imbalance.
+
+
+Because the `loss function` (or the cost function) guides the learning process, many algorithm-level methods involve `adjustment` to the loss function. The key idea is that if there are two instances, `x1` and `x2`, and the loss resulting from making the wrong prediction on `x1` is higher than `x2`, the model will prioritize making the correct prediction on `x1` over making the correct prediction on `x2`. By giving the training instances we care about higher weight, we can make the model focus more on learning these instances.
+
+
+
+
+## Data Augmentation
+Data augmentation is a family of techniques that are used to increase the amount of training data. Traditionally, these techniques are used for tasks that have limited training data, such as in medical imaging. However, data—augmented data can make our models more robust to noise and even adversarial attacks.
+
+
+Data augmentation has become a standard step in many computer vision tasks and is finding its way into natural language processing (NLP) tasks. The techniques depend heavily on the data format, as image manipulation is different from text manipulation. 
+
+
+**Three main types of Data Augmentation**
+1. **simple label-preserving transformations**
+In computer vision, the simplest data augmentation technique is to randomly modify an image while preserving its label. You can modify the image by `cropping`, `flipping`, `rotating`, `inverting` (horizontally or vertically), `erasing part of the image`, and more. This makes sense because a rotated image of a dog is still a dog. Common ML frameworks like `PyTorch`, `TensorFlow`, and `Keras` all have support for image augmentation.
+
+
+In NLP, you can randomly replace a word with a similar word, assuming that this replacement wouldn’t change the meaning or the sentiment of the sentence.
+
+This type of data augmentation is a quick way to double or triple your training data.
+
+
+
+2. **Perturbation**
+Perturbation is also a label-preserving operation, but because sometimes it’s used to trick models into making wrong predictions.
+
+Neural networks, in general, are sensitive to noise. In the case of computer vision, this means that adding a small amount of noise to an image can cause a neural network to misclassify it. 
+
+Using deceptive data to trick a neural network into making wrong predictions is called `adversarial attacks`. Adding noise to samples is a common technique to create `adversarial samples`. The success of adversarial attacks is especially exaggerated as the resolution of images increases.
+
+
+
+3. **Data Synthesis**
+Since collecting data is expensive and slow, with many potential privacy concerns, it’d be a dream if we could sidestep it altogether and train our models with synthesized data. Even though we’re still far from being able to synthesize all training data, it’s possible to synthesize some training data to boost a model’s performance.
+
+
+In NLP, templates can be a cheap way to bootstrap your model. (In NLP, a `template` is a pre-defined structure, often a string of words or a more complex format, that serves as a guide for generating or processing text. It provides a framework with placeholders that can be filled with specific information or content to create meaningful text outputs or to structure and analyze input text. )
+
+
+## Summary
+Training data still forms the foundation of modern ML algorithms. No matter how clever your algorithms might be, if your training data is bad, your algorithms won’t be able to perform well. It’s worth it to invest time and effort to curate and create training data that will enable your algorithms to learn something meaningful.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
