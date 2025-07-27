@@ -143,6 +143,8 @@ b. Samples are reweighted based on how well the first classifier classifies them
 
 
 c. Train the second classifier on this reweighted dataset. Your ensemble now consists of the first and the second classifiers.
+
+
 d. Samples are weighted based on how well the ensemble classifies them.
 
 
