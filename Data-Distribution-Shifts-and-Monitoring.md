@@ -161,7 +161,7 @@ In many cases, concept drifts are cyclic or seasonal. For example, rideshare pri
 
 **In summary:**
       
-- Covariate Shift: $(P(X)$)$ changes, $(P(Y|X))$ stays the same. 
+- Covariate Shift: $(P(X))$ changes, $(P(Y|X))$ stays the same. 
 
 
 - Label Shift: $(P(Y))$ changes, $(P(X|Y))$ stays the same. 
