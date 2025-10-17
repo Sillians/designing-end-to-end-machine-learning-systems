@@ -50,7 +50,7 @@ When the hardware that you use to deploy your model, such as CPUs or GPUs, doesn
 If a component of your system runs from a server somewhere, such as AWS or a hosted service, and that server is down, your system will also be down.
 
 
-Addressing software system failures requires not `ML` skills, but traditional software engineering skills, Because of the importance of traditional software engineering skills in deploying `ML` systems, `ML engineering` is mostly engineering, not `ML`.
+Addressing software system failures requires not ML skills, but traditional software engineering skills. Because of the importance of traditional software engineering skills in deploying `ML` systems, `ML engineering` is mostly engineering, not `ML`.
 
 
 
@@ -61,7 +61,7 @@ ML-specific failures are failures specific to ML systems. Examples include data 
 
 1. **Production data differing from training data**
 
-The assumption that the unseen data to come from the same stationary distribution as the training data distribution is incorrect in most cases for two reasons. First, the underlying distribution of the real-world data is unlikely to be the same as the underlying distribution of the training data.  
+The assumption that the unseen data will come from the same stationary distribution as the training data distribution is incorrect in most cases for two reasons. First, the underlying distribution of the real-world data is unlikely to be the same as the underlying distribution of the training data.  
 
 
 Curating a training dataset that can accurately represent the data that a model will encounter in production turns out to be very difficult.
@@ -118,7 +118,7 @@ Data distribution shift refers to changes in the input data's characteristics (f
 
 1. **Covariate shift (or Data Drift):**
 
-Occurs when the distribution of the input features (covariates, $(X)$) changes, but the relationship between the features and the target 
+Occurs when the distribution of the input features (covariates, $X$) changes, but the relationship between the features and the target 
 variable $((Y))$, i.e., $(P(Y|X))$, remains the same. 
 
 For example, a model trained to predict house prices in a specific city might experience covariate shift if it's then deployed in a different city with a different distribution of house sizes, number of bedrooms, etc., but the fundamental relationship between these features and price remains consistent.
