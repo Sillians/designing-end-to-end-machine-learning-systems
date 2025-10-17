@@ -129,7 +129,7 @@ Mathematically, `covariate shift` is when $P(X)$ changes, but $P(Y|X)$ remains t
 If you know in advance how the real-world input distribution will differ from your training `input distribution`, you can leverage techniques such as `importance weighting` to train your model to work for the real-world data. `Importance weighting` consists of two steps: 
 - estimate the density ratio between the real-world input distribution and
 - the training input distribution, 
-then weight the training data according to this ratio and train an ML model on this weighted data.
+Then weight the training data according to this ratio and train an ML model on this weighted data.
 
 `Importance weighting` is a technique that assigns different weights to training examples based on their importance or relevance. This is particularly useful when dealing with data distributions that differ between the training and testing environments (distribution shift) or when certain examples are more informative than others. By adjusting the weights, importance weighting can help mitigate bias and improve model performance on the target distribution or task. 
 
@@ -137,12 +137,12 @@ then weight the training data according to this ratio and train an ML model on t
 
 2. **Label shift:**
 
-Occurs when the distribution of the target variable (labels, $(Y)$) changes, but the conditional distribution of features given the label, i.e., 
+Occurs when the distribution of the target variable (labels, $Y$) changes, but the conditional distribution of features given the label, i.e., 
 $(P(X|Y))$, remains the same. 
 
 This is essentially the inverse of covariate shift. For instance, in an email spam classification model, if the proportion of spam emails drastically increases or decreases, but the characteristics of spam and non-spam emails remain the same, that's label shift.
 
-Label shift, also known as `prior shift`, `prior probability shift`, or `target shift`, is when $P(Y)$ changes but $P(X|Y)$ remains the same. You can think of this as the case when the output distribution changes but, for a given output, the input distribution stays the same.
+Label shift, also known as `prior shift`, `prior probability shift`, or `target shift`, is when $P(Y)$ changes but $P(X|Y)$ remains the same. You can think of this as the case when the output distribution changes, but for a given output, the input distribution stays the same.
 
 
 
@@ -153,7 +153,7 @@ Occurs when the underlying relationship between the input features $((X))$ and t
 
 For example, a model predicting customer churn might experience concept drift if a new marketing strategy or competitor emerges, altering the factors that influence customer retention, even if the customer demographics (input features) remain stable. 
 
-`Concept drift`, also known as `posterior shift`, is when the input distribution remains the same but the conditional distribution of the output given an input changes. You can think of this as “same input, different output.” 
+`Concept drift`, also known as `posterior shift`, is when the input distribution remains the same, but the conditional distribution of the output given an input changes. You can think of this as “same input, different output.” 
 
 In many cases, concept drifts are cyclic or seasonal. For example, rideshare prices will fluctuate on weekdays versus weekends, and flight ticket prices rise during holiday seasons. Companies might have different models to deal with cyclic and seasonal drifts. For example, they might have one model to predict rideshare prices on weekdays and another model for weekends.
 
@@ -179,14 +179,14 @@ There are other types of changes in the real world that, even though not well st
 
 - `feature change`: 
 
-One is feature change, such as when new features are added, older features are removed, or the set of all possible values of a feature changes.
+One is a feature change, such as when new features are added, older features are removed, or the set of all possible values of a feature changes.
 
 
 - `Label schema change`: 
 
-Label schema change is when the set of possible values for `Y` change. With label shift, $P(Y)$ changes but $P(X|Y)$ remains the same. With label schema change, both $P(Y)$ and $P(X|Y)$ change. A schema describes the structure of the data, so the label schema of a task describes the structure of the labels of that task. For example, a dictionary that maps from a class to an integer value, such as ${“POSITIVE”: 0, “NEGATIVE”: 1}$, is a schema.
+Label schema change is when the set of possible values for `Y` changes. With label shift, $P(Y)$ changes, but $P(X|Y)$ remains the same. Withthe  label schema change, both $P(Y)$ and $P(X|Y)$ change. A schema describes the structure of the data, so the label schema of a task describes the structure of the labels of that task. For example, a dictionary that maps from a class to an integer value, such as ${“POSITIVE”: 0, “NEGATIVE”: 1}$, is a schema.
 
-When the number of classes changes, your model’s structure might change, and you might need to both relabel your data and retrain your model from scratch. Label schema change is especially common with high-cardinality tasks—tasks with a high number of classes—such as product or documentation categorization.
+When the number of classes changes, your model’s structure might change, and you might need to both relabel your data and retrain your model from scratch. Label schema change is especially common with high-cardinality tasks—tasks with a high number of classes, such as product or documentation categorization.
 
 There’s no rule that says that only one type of shift should happen at one time. A model might suffer from multiple types of drift, which makes handling them a lot more difficult.
 
@@ -194,7 +194,7 @@ There’s no rule that says that only one type of shift should happen at one tim
 
 ### Detecting Data Distribution Shifts
 
-`Data distribution shifts` are only a problem if they cause your model’s performance to degrade. So the first idea might be to monitor your model’s `accuracy-related` metrics— `accuracy`, `F1 score`, `recall`, `AUC-ROC`, etc. in production to see whether they have changed. “Change” here usually means “decrease,” but if my model’s accuracy suddenly goes up or fluctuates significantly for no reason that I’m aware of, I’d want to investigate.
+`Data distribution shifts` are only a problem if they cause your model’s performance to degrade. So the first idea might be to monitor your model’s `accuracy-related` metrics— `accuracy`, `F1 score`, `recall`, `AUC-ROC`, etc., in production to see whether they have changed. “Change” here usually means “decrease,” but if my model’s accuracy suddenly goes up or fluctuates significantly for no reason that I’m aware of, I’d want to investigate.
 
 
 Accuracy-related metrics work by comparing the model’s predictions to ground truth labels.30 During model development, you have access to labels, but in production, you don’t always have access to labels, and even if you do, labels will be delayed.
@@ -215,7 +215,7 @@ The Mean, median, and variance are only useful with the distributions for which 
 training distribution. However, if those metrics are similar, there’s no guarantee that there’s no shift.
 
 
-A more sophisticated solution is to use a two-sample hypothesis test, shortened as two-sample test. It’s a test to determine whether the difference between two populations (two sets of data) is statistically significant. If the difference is statistically significant, then the probability that the difference is a random fluctuation due to sampling variability is very low, and, therefore, the difference is caused by the fact that these two populations come from two distinct distributions.
+A more sophisticated solution is to use a two-sample hypothesis test, shortened as a two-sample test. It’s a test to determine whether the difference between two populations (two sets of data) is statistically significant. If the difference is statistically significant, then the probability that the difference is a random fluctuation due to sampling variability is very low, and, therefore, the difference is caused by the fact that these two populations come from two distinct distributions.
 
 
 A basic two-sample test is the `Kolmogorov–Smirnov test`, also known as the `K-S` or `KS test`. It’s a nonparametric statistical test, which means it doesn’t require any parameters of the underlying distribution to work. It doesn’t make any assumption about the underlying distribution, which means it can work for any distribution.
@@ -228,13 +228,13 @@ Because two-sample tests often work better on low-dimensional data than on high-
 
 Not all types of shifts are equal—some are harder to detect than others. For example, shifts happen at different rates, and abrupt changes are easier to detect than slow, gradual changes. Shifts can also happen across two dimensions: `spatial` or `temporal`.
 
-`Spatial shifts` are shifts that happen across access points, such as your application gets a new group of users or your application is now served on a different type of device.
+`Spatial shifts` are shifts that happen across access points, such as when your application gets a new group of users or your application is now served on a different type of device.
 
 `Temporal shifts` are shifts that happen over time. To detect temporal shifts, a common approach is to treat input data to ML applications as time-series data.
 
 
 When computing running statistics over time, it’s important to differentiate between cumulative and sliding statistics. Sliding statistics are computed within a single time scale window, e.g., an hour. Cumulative statistics are continually updated with more data. This means, for the beginning of each time scale window, the sliding accuracy is reset, whereas the cumulative sliding accuracy is not. Because cumulative statistics
-contain information from previous time windows, they might obscure what happens in a specific time window.
+contain information from previous time windows, and they might obscure what happens in a specific time window.
 
 
 
@@ -243,7 +243,7 @@ contain information from previous time windows, they might obscure what happens 
 How companies address data shifts depends on how sophisticated their ML infrastructure setups are. At one end of the spectrum, we have companies that have just started with ML and are still working on getting ML models into production, so they might not have gotten to the point where data shifts are catastrophic to them. However, at some point in the future—maybe three months, maybe six months—they might realize that their initial deployed models have degraded to the point that they do more harm than good. 
 
 
-At the same time, many companies assume that data shifts are inevitable, so they periodically retrain their models—once a month, once a week, or once a day—regardless of the extent of the shift. How to determine the optimal frequency to retrain your models is an important decision that many companies still determine based on
+At the same time, many companies assume that data shifts are inevitable, so they periodically retrain their models—once a month, once a week, or once a day—regardless of the extent of the shift. How to determine the optimal frequency to retrain your models is an important decision that many companies still make based on
 gut feelings instead of experimental data
 
 
@@ -276,15 +276,15 @@ I want to reiterate that not all performance degradation of models in production
 As the industry realized that many things can go wrong with an ML system, many companies started investing in monitoring and observability for their ML systems in production.
 
 
-Monitoring and observability are sometimes used exchangeably, but they are different. Monitoring refers to the act of `tracking`, `measuring`, and `logging` different metrics that can help us determine when something goes wrong. Observability means setting up our system in a way that gives us visibility into our system to help us investigate what went wrong. The process of setting up our system in this way is also called `“instrumentation.”` Examples of instrumentation are adding timers to your functions, counting `NaNs` in your features, tracking how inputs are transformed through your systems, logging unusual events such as unusually long inputs, etc. Observability is part of monitoring. Without some level of observability, monitoring is impossible.
+Monitoring and observability are sometimes used interchangeably, but they are different. Monitoring refers to the act of `tracking`, `measuring`, and `logging` different metrics that can help us determine when something goes wrong. Observability means setting up our system in a way that gives us visibility into our system to help us investigate what went wrong. The process of setting up our system in this way is also called `“instrumentation.”` Examples of instrumentation are adding timers to your functions, counting `NaNs` in your features, tracking how inputs are transformed through your systems, logging unusual events such as unusually long inputs, etc. Observability is part of monitoring. Without some level of observability, monitoring is impossible.
 
 
-Monitoring is all about metrics. Because ML systems are software systems, the first class of metrics you’d need to monitor are the operational metrics. These metrics are designed to convey the health of your systems. They are generally divided into three levels: the network the system is run on, the machine the system is run on, and the application that the system runs. Examples of these metrics are `latency;` `throughput;` the number of prediction requests your model receives in the last minute, `hour`, `day`; the percentage of requests that return with a 2xx code; `CPU/GPU` utilization; `memory` utilization; etc. No matter how good your ML model is, if the system is down, you’re not going to benefit from it.
+Monitoring is all about metrics. Because ML systems are software systems, the first class of metrics you’d need to monitor is the operational metrics. These metrics are designed to convey the health of your systems. They are generally divided into three levels: the network the system is run on, the machine the system is run on, and the application that the system runs. Examples of these metrics are `latency;` `throughput;` the number of prediction requests your model receives in the last minute, `hour`, `day`; the percentage of requests that return with a 2xx code, `CPU/GPU` utilization, `memory` utilization, etc. No matter how good your ML model is, if the system is down, you’re not going to benefit from it.
 
 
-One of the most important characteristics of a software system in production is availability—how often the system is available to offer reasonable performance to users. This characteristic is measured by uptime, the percentage of time a system is up. The conditions to determine whether a system is up are defined in the `service level objectives (SLOs)` or `service level agreements (SLAs)`. For example, an `SLA` may specify that the service is considered to be up if it has a median latency of less than 200 ms and a 99th percentile under 2 s.
+One of the most important characteristics of a software system in production is availability—how often the system is available to offer reasonable performance to users. This characteristic is measured by uptime, the percentage of time a system is up. The conditions to determine whether a system is up are defined in the `service level objectives (SLOs)` or `service level agreements (SLAs)`. For example, an `SLA` may specify that the service is considered to be up if it has a median latency of less than 200 ms and a 99th percentile under 2s.
 
-However, for `ML systems`, the system health extends beyond the system uptime. If your `ML system` is up but its predictions are garbage, your users aren’t going to be happy. Another class of metrics you’d want to monitor are `ML-specific metrics` that tell you the health of your ML models.
+However, for `ML systems`, the system health extends beyond the system uptime. If your `ML system` is up but its predictions are garbage, your users aren’t going to be happy. Another class of metrics you’d want to monitor is `ML-specific metrics` that tell you the health of your ML models.
 
 
 
@@ -317,7 +317,7 @@ getting worse.
 
 Prediction is the most common artifact to monitor. If it’s a regression task, each prediction is a continuous value (e.g., the predicted price of a house), and if it’s a classification task, each prediction is a discrete value corresponding to the predicted category. Because each prediction is usually just a number (low dimension), predictions are easy to visualize, and their summary statistics are straightforward to compute and interpret.
 
-You can monitor predictions for distribution shifts. Because predictions are low dimensional, it’s also easier to compute two-sample tests to detect whether the prediction distribution has shifted. Prediction distribution shifts are also a proxy for input distribution shifts. Assuming that the function that maps from input to output doesn’t change—the weights and biases of your model haven’t changed—then a change in the prediction distribution generally indicates a change in the underlying input distribution.
+You can monitor predictions for distribution shifts. Because predictions are low-dimensional, it’s also easier to compute two-sample tests to detect whether the prediction distribution has shifted. Prediction distribution shifts are also a proxy for input distribution shifts. Assuming that the function that maps from input to output doesn’t change—the weights and biases of your model haven’t changed—then a change in the prediction distribution generally indicates a change in the underlying input distribution.
 
 You can also monitor predictions for anything odd happening, such as predicting an unusual number of False in a row. 
 
@@ -326,7 +326,7 @@ You can also monitor predictions for anything odd happening, such as predicting 
 
 ### Monitoring features
 
-ML monitoring solutions in the industry focus on tracking changes in features, both the features that a model uses as inputs and the intermediate transformations from raw inputs into final features. Feature monitoring is appealing because compared to raw input data, features are well structured following a predefined schema. The first step of feature monitoring is feature validation: ensuring that your features follow an
+ML monitoring solutions in the industry focus on tracking changes in features, both the features that a model uses as inputs and the intermediate transformations from raw inputs into final features. Feature monitoring is appealing because, compared to raw input data, features are well structured following a predefined schema. The first step of feature monitoring is feature validation: ensuring that your features follow an
 expected schema. The expected schemas are usually generated from training data or from common sense. If these expectations are violated in production, there might be a shift in the underlying distribution. For example, here are some of the things you can check for a given feature:
 
 
@@ -349,7 +349,7 @@ There are four major concerns when doing feature monitoring:
 
 - A company might have hundreds of models in production, and each model uses hundreds, if not thousands, of features.
 
-- While tracking features is useful for debugging purposes, it’s not very useful for detecting model performance degradation.
+- While tracking features are useful for debugging purposes, they’re not very useful for detecting model performance degradation.
 
 - Feature extraction is often done in multiple steps (such as filling missing values and standardization), using multiple libraries (such as pandas, Spark), on multiple services (such as BigQuery or Snowflake).
 
@@ -381,7 +381,7 @@ input and output of that function, etc. Also, don’t forget to `log crashes`, `
 When we log an event, we want to make it as easy as possible for us to find it later. This practice with microservice architecture is called `distributed tracing`. We want to give each process a unique ID so that, when something goes wrong, the error message will (hopefully) contain that ID. This allows us to search for the log messages associated with it. We also want to record with each event all the metadata necessary: the time when it happens, the service where it happens, the function that is called, the user associated with the process, if any, etc.
 
 
-Analyzing billions of logged events manually is futile, so many companies use ML to analyze logs. An example use case of ML in log analysis is `anomaly detection`: to detect abnormal events in your system. A more sophisticated model might even classify each event in terms of its priorities such as `usual`, `abnormal`, `exception`, `error`, and `fatal`.
+Analyzing billions of logged events manually is futile, so many companies use ML to analyze logs. An example use case of ML in log analysis is `anomaly detection`: to detect abnormal events in your system. A more sophisticated model might even classify each event in terms of its priorities, such as `usual`, `abnormal`, `exception`, `error`, and `fatal`.
 
 
 To discover anomalies in your logs as soon as they happen, you want to process your events as soon as they are logged. This makes log processing a stream processing problem. You can use real-time transport such as `Kafka` or `Amazon Kinesis` to transport events as they are logged. To search for events with specific characteristics
@@ -394,7 +394,7 @@ in real time, you can leverage a streaming SQL engine like `KSQL` or `Flink SQL`
 A picture is worth a thousand words. A series of numbers might mean nothing to you, but visualizing them on a graph might reveal the relationships among these numbers. `Dashboards` to visualize metrics are critical for monitoring.
 
 
-Another use of dashboards is to make monitoring accessible to nonengineers. Monitoring isn’t just for the developers of a system, but also for nonengineering stakeholders including product managers and business developers.
+Another use of dashboards is to make monitoring accessible to non-engineers. Monitoring isn’t just for the developers of a system, but also for nonengineering stakeholders, including product managers and business developers.
 
 
 Even though graphs can help a lot with understanding metrics, they aren’t sufficient on their own. You still need experience and statistical knowledge. Excessive metrics on a dashboard can also be counterproductive, a phenomenon known as `dashboard rot`. It’s important to pick the right metrics or abstract out lower-level metrics to compute higher-level signals that make better sense for your specific tasks.
@@ -430,16 +430,16 @@ Alert fatigue is a real phenomenon. Alert fatigue can be demoralizing—nobody l
 
 ## Observability
 
-`Observability` is a concept drawn from control theory, and it refers to bringing `“better visibility into understanding the complex behavior of software using [outputs] collected from the system at run time.”`
+`Observability` is a concept drawn from control theory, and it refers to bringing “better visibility into understanding the complex behavior of software using [outputs] collected from the system at run time.”`
 
 
-observability makes an assumption stronger than traditional monitoring: that the internal states of a system can be inferred from knowledge of its external outputs. Internal states can be current states, such as `“the GPU utilization right now,”` and historical states, such as `“the average GPU utilization over the last day.”`
+Observability makes an assumption stronger than traditional monitoring: that the internal states of a system can be inferred from knowledge of its external outputs. Internal states can be current states, such as `“the GPU utilization right now,”` and historical states, such as `“the average GPU utilization over the last day.”`
 
 
 When something goes wrong with an observable system, we should be able to figure out what went wrong by looking at the `system’s logs` and `metrics` without having to ship new code to the system. `Observability` is about instrumenting your system in a way to ensure that sufficient information about a system’s runtime is collected and analyzed.
 
 
-Monitoring centers around metrics, and metrics are usually aggregated. Observability allows more fine-grain metrics, so that you can know not only when a model’s performance degrades but also for what types of inputs or what subgroups of users or over what period of time the model degrades.
+Monitoring centers around metrics, and metrics are usually aggregated. Observability allows more fine-grained metrics, so that you can know not only when a model’s performance degrades but also for what types of inputs or what subgroups of users or over what period of time the model degrades.
 
 
 In ML, observability encompasses interpretability. Interpretability helps us understand how an ML model works, and observability helps us understand how the entire ML system, which includes the ML model, works.
